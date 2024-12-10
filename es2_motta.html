@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione vendite</title>
+</head>
+<body>
+    <h1>Gestione vendite Motta</h1>
+    <div id="output"></div>
+    <script>
+        let valoreCassa;
+
+        function calcolaCassa() {
+            let cassa = arguments[0];
+            for (let i = 1; i < arguments.length; i++) {
+                cassa += arguments[i];
+            }
+            return cassa;
+        }
+        
+        function controlloValoreInput(valore) {
+            if (valore < 0) {
+                alert("Errore: valore inserito non valido");
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function controlloVenditeInput(numVendite) {
+            if (numVendite < 1) {
+                alert("Errore: numero vendite non valido");
+                return true;
+            } else {
+                return false
+            }
+        }
+
+        function inserisciVendite(numVendite) {
+            let listaVendite = [];
+            for (let i = 0; i < numVendite; i++) {
+                do {
+                    var vendita = parseFloat(prompt("Inserisci la "+ (i+1) + " vendita:"));
+                } while (controlloValoreInput(vendita));
+                listaVendite.push(vendita);
+                document.getElementById("output").innerHTML += "Vendita " + (i+1) + " = " + vendita + "€<br>";
+            }
+            return listaVendite;
+        }
+
+        do {
+            valoreCassa = parseFloat(prompt("Inserisci il valore iniziale della cassa:"));
+        } while (controlloValoreInput(valoreCassa));
+
+        document.getElementById("output").innerHTML += "Valore di cassa iniziale = " + valoreCassa + "€<br>";
+
+        do {
+            do {
+                var numeroVendite = parseInt(prompt("Inserisci il numero di vendita:"));
+            } while(controlloVenditeInput(numeroVendite));
+            let vendite = inserisciVendite(numeroVendite);
+            valoreCassa = calcolaCassa(valoreCassa, ...vendite);
+            var controllo = parseInt(prompt("Inserisci 1 per continuare: "));
+            if(controllo == 1) {
+                document.getElementById("output").innerHTML += "Valore di cassa attuale = " + valoreCassa + "€<br>";
+            } else {
+                document.getElementById("output").innerHTML += "Valore di cassa finale = " + valoreCassa + "€";
+            }
+        } while (controllo == 1);
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenotazioni Motta</title>
+    <style>
+        table, tr, th, td {
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prenotazioni Motta</h1>
+    <form id="myForm">
+        <table>
+            <tr>
+                <td>Codice Prenotazione</td>
+                <td><input type="number" id="codice"></td>
+            </tr>
+            <tr>
+                <td>Numero di biglietti</td>
+                <td><input type="number" id="biglietti" min="1"></td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="aggiungiPrenotazione()">Aggiungi Prenotazione</button></td>
+                <td><button disabled type="button" onclick="mostraPrenotazione()" id="risultati">Mostra Prenotazioni</button></td>
+            </tr>
+        </table>
+    </form>
+    <div id="output"></div>
+    
+
+    <script>
+        let arrayPrenotazioni = [];
+        function aggiungiPrenotazione() {
+            let prenotazione = {
+                codicePrenotazione: document.getElementById("codice").value,
+                numBiglietti: document.getElementById("biglietti").value,
+                importo: null
+            };
+
+            if (controlloCodice(prenotazione.codicePrenotazione)) {
+                alert("Errore: codice inserito vuoto");
+            } else if (controlloBiglietti(prenotazione.numBiglietti)) {
+                alert("Errore: numero di biglietti vuoto o non valido");
+            } else {
+                document.getElementById("codice").value = "";
+                document.getElementById("biglietti").value = "";
+                document.getElementById("risultati").disabled = false;
+                prenotazione.importo = calcolaImporto(prenotazione.numBiglietti);
+                aggiungiPrenotazione(prenotazione);
+            }
+
+            function controlloCodice(codice) {
+                if (codice != "") {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            function controlloBiglietti(numBiglietti) {
+                if (numBiglietti != "") {
+                    if (numBiglietti < 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+            }
+
+            function calcolaImporto(biglietti) {
+                if (biglietti <= 4) {
+                    return biglietti * 20;
+                } else if (biglietti <= 9) {
+                    return (biglietti * 20) * 0.90;
+                } else {
+                    return (biglietti * 20) * 0.80;
+                }
+            }
+
+            function aggiungiPrenotazione(prenotazione) {
+                arrayPrenotazioni.push(prenotazione);
+            }
+        }
+
+        function mostraPrenotazione() {
+            function generaTabella() {
+                let tabella = "<table><tr><th>Codice Prenotazione</th><th>Numero di Biglietti</th><th>Importo</th></tr>";
+                for (const prenotazione of arrayPrenotazioni) {
+                    tabella += `<tr>
+                                    <td>${prenotazione.codicePrenotazione}</td>
+                                    <td>${prenotazione.numBiglietti}</td>
+                                    <td>${(prenotazione.importo).toFixed(2)}€</td>
+                                </tr>`;
+                }
+                return tabella;
+            }
+
+            function importoMaggioreDueCento() {
+                let listaMaggiori = [];
+                for (const prenotazione of arrayPrenotazioni) {
+                    if (prenotazione.importo >200) {
+                        listaMaggiori.push(prenotazione.importo);
+                    }
+                }
+                return listaMaggiori;
+            }
+
+            maggioriDueCento = importoMaggioreDueCento();
+            document.getElementById("output").innerHTML = "<h1>Risultati</h1>"
+            document.getElementById("output").innerHTML += generaTabella();
+            document.getElementById("output").innerHTML += "<p id='maggiori200'>Totale prenostazione importo > 200€ = </p>";
+            for (let i = 0; i < maggioriDueCento.length; i++) {
+                if (i == maggioriDueCento.length-1) {
+                    document.getElementById("maggiori200").innerHTML += maggioriDueCento[i] + "€."
+                } else {
+                    document.getElementById("maggiori200").innerHTML += maggioriDueCento[i] + "€, "
+                } 
+            }
+            document.getElementById("risultati").disabled = true;
+
+        }
+    </script>
+</body>
+</html>
